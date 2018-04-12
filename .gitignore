@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# OpenCV
+.idea/
+datasets/
+recognizer/
+*.db

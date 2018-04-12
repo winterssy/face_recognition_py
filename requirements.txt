@@ -1,0 +1,4 @@
+numpy==1.14.2
+PyQt5==5.9.2
+PySocks==1.6.8
+python-telegram-bot==10.0.1
