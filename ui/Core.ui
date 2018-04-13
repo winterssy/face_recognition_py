@@ -14,7 +14,7 @@
    <string>OpenCV Face Recognition System - Core</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="faceRecognitionGroupBox">
+   <widget class="QGroupBox" name="faceRecognizerGroupBox">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -32,7 +32,7 @@
     <property name="flat">
      <bool>false</bool>
     </property>
-    <widget class="QLabel" name="faceRecognitionCaptureLabel">
+    <widget class="QLabel" name="faceRecognizerCaptureLabel">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -52,7 +52,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="faceRecognitionSettingsLogGroupBox">
+   <widget class="QGroupBox" name="faceRecognizerSettingsLogGroupBox">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -154,7 +154,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="alarmThresholdLabel">
+        <widget class="QLabel" name="autoAlarmThresholdLabel">
          <property name="text">
           <string>自动报警阈值：</string>
          </property>
@@ -164,7 +164,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QSlider" name="alarmThresholdSlider">
+        <widget class="QSlider" name="autoAlarmThresholdSlider">
          <property name="minimum">
           <number>50</number>
          </property>
@@ -203,7 +203,7 @@
      <property name="title">
       <string>使用说明</string>
      </property>
-     <widget class="QLabel" name="alarmTipLabel">
+     <widget class="QLabel" name="autoAlarmTipLabel">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -219,7 +219,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLabel" name="debugTipLabel">
+     <widget class="QLabel" name="confidenceTipLabel">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -279,7 +279,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="faceRecognitionCheckBox">
+        <widget class="QCheckBox" name="faceRecognizerCheckBox">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -292,7 +292,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="alarmCheckBox">
+        <widget class="QCheckBox" name="panalarmCheckBox">
          <property name="text">
           <string>报警系统</string>
          </property>
@@ -436,7 +436,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="telegramBotCheckBox">
+        <widget class="QCheckBox" name="telegramBotPushCheckBox">
          <property name="text">
           <string>TelegramBot推送</string>
          </property>
@@ -521,7 +521,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="realTimeGroupBox">
+   <widget class="QGroupBox" name="faceTrackerGroupBox">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -531,7 +531,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>实时画面</string>
+     <string>人脸跟踪画面</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -539,7 +539,7 @@
     <property name="flat">
      <bool>false</bool>
     </property>
-    <widget class="QLabel" name="realTimeCaptureLabel">
+    <widget class="QLabel" name="faceTrackerCaptureLabel">
      <property name="geometry">
       <rect>
        <x>0</x>
