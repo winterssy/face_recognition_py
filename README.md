@@ -16,7 +16,6 @@
 $ git clone https://github.com/winterssy/face_recognition_py.git
 $ cd face_recognition_py
 ```
-
 ### 创建Python虚拟环境
 ```
 $ conda create -n opencv python=3.6
@@ -47,6 +46,10 @@ $ python dataRecord.pyc
 ### 运行数据管理系统
 ```
 $ python dataManage.pyc
+```
+### 更新
+```
+$ git pull
 ```
 ### 退出虚拟环境
 ```
