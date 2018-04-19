@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>systemUI</class>
- <widget class="QWidget" name="systemUI">
+ <class>dataRecordUI</class>
+ <widget class="QWidget" name="dataRecordUI">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>971</width>
-    <height>580</height>
+    <width>1011</width>
+    <height>601</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>601</width>
-     <height>551</height>
+     <width>641</width>
+     <height>581</height>
     </rect>
    </property>
    <property name="title">
@@ -36,8 +36,8 @@
      <rect>
       <x>0</x>
       <y>50</y>
-      <width>600</width>
-      <height>450</height>
+      <width>640</width>
+      <height>480</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -54,8 +54,8 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>510</y>
-      <width>601</width>
+      <y>540</y>
+      <width>641</width>
       <height>31</height>
      </rect>
     </property>
@@ -108,7 +108,7 @@
      <rect>
       <x>1</x>
       <y>21</y>
-      <width>601</width>
+      <width>641</width>
       <height>27</height>
      </rect>
     </property>
@@ -150,10 +150,10 @@
   <widget class="QGroupBox" name="dataGroupBox">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>660</x>
      <y>10</y>
      <width>341</width>
-     <height>551</height>
+     <height>581</height>
     </rect>
    </property>
    <property name="title">
@@ -168,7 +168,7 @@
       <x>10</x>
       <y>130</y>
       <width>321</width>
-      <height>221</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="title">
@@ -178,9 +178,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>90</y>
        <width>301</width>
-       <height>131</height>
+       <height>141</height>
       </rect>
      </property>
      <property name="title">
@@ -195,7 +195,7 @@
         <height>76</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="infoHorizontalLayout">
+      <layout class="QHBoxLayout" name="infoConfirmHorizontalLayout">
        <item>
         <layout class="QVBoxLayout" name="keyVerticalLayout">
          <item>
@@ -284,7 +284,7 @@
         <x>10</x>
         <y>100</y>
         <width>281</width>
-        <height>25</height>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
@@ -318,7 +318,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>44</y>
+       <y>50</y>
        <width>281</width>
        <height>31</height>
       </rect>
@@ -357,9 +357,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>360</y>
+      <y>380</y>
       <width>321</width>
-      <height>181</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="title">
@@ -371,7 +371,7 @@
        <x>0</x>
        <y>20</y>
        <width>321</width>
-       <height>161</height>
+       <height>171</height>
       </rect>
      </property>
     </widget>
@@ -397,7 +397,7 @@
        <height>31</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="sqlUserCountHorizontalLayout">
+     <layout class="QHBoxLayout" name="dbUserCountHorizontalLayout">
       <item>
        <widget class="QLabel" name="dbUserCountLabel">
         <property name="text">

@@ -36,7 +36,7 @@ class DataRecordUI(QWidget):
         super(DataRecordUI, self).__init__()
         loadUi('./ui/DataRecord.ui', self)
         self.setWindowIcon(QIcon('./icons/icon.png'))
-        self.setFixedSize(971, 580)
+        self.setFixedSize(1011, 601)
 
         # OpenCV
         self.cap = cv2.VideoCapture()
@@ -102,8 +102,8 @@ class DataRecordUI(QWidget):
             else:
                 camID = 0
             self.cap.open(camID)
-            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 600)
-            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 450)
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             ret, frame = self.cap.read()
 
             if not ret:

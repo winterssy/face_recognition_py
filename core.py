@@ -40,7 +40,7 @@ class CoreUI(QMainWindow):
     trainingData = './recognizer/trainingData.yml'
     cap = cv2.VideoCapture()
     captureQueue = queue.Queue()  # 图像队列
-    alarmQueue = queue.Queue()  # 报警队列
+    alarmQueue = queue.LifoQueue()  # 报警队列，后进先出
     logQueue = multiprocessing.Queue()  # 日志队列
     receiveLogSignal = pyqtSignal(str)  # LOG信号
 
@@ -151,8 +151,8 @@ class CoreUI(QMainWindow):
             else:
                 camID = 0
             self.cap.open(camID)
-            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             ret, frame = self.cap.read()
             if not ret:
                 logging.error('无法调用电脑摄像头{}'.format(camID))
