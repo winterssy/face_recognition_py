@@ -1,5 +1,5 @@
 # face_recognition_py
-本项目基于OpenCV使用Haar级联与dlib库进行人脸检测及实时跟踪，应用LBPH算法开发了一个简单的人脸识别系统。系统采用sqlite3进行序列化数据存储，能够对陌生人脸闯入进行报警，并拥有基于PyQt5设计的GUI实现。
+本项目基于OpenCV使用Haar级联与dlib库进行人脸检测及实时跟踪，应用LBPH算法开发了一个功能相对完整的人脸识别系统。系统采用sqlite3进行序列化数据存储，能够对陌生人脸闯入进行报警，并拥有基于PyQt5设计的GUI实现。
 
 ## 系统预览
 ### 核心框架
@@ -37,15 +37,15 @@ $ pip install -r requirements.txt
 ```
 ### 运行核心框架
 ```
-$ python core.pyc
+$ python core.py
 ```
 ### 运行人脸采集系统
 ```
-$ python dataRecord.pyc
+$ python dataRecord.py
 ```
 ### 运行数据管理系统
 ```
-$ python dataManage.pyc
+$ python dataManage.py
 ```
 ### 更新
 ```

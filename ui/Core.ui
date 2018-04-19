@@ -14,51 +14,13 @@
    <string>OpenCV Face Recognition System - Core</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="faceRecognizerGroupBox">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>10</y>
-      <width>481</width>
-      <height>381</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>人脸识别画面</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-    <widget class="QLabel" name="faceRecognizerCaptureLabel">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>20</y>
-       <width>480</width>
-       <height>360</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="text">
-      <string>&lt;font color=red&gt;摄像头未开启&lt;/font&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="faceRecognizerSettingsLogGroupBox">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>400</y>
-      <width>481</width>
-      <height>191</height>
+      <x>830</x>
+      <y>10</y>
+      <width>321</width>
+      <height>361</height>
      </rect>
     </property>
     <property name="title">
@@ -72,7 +34,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>221</width>
+       <width>301</width>
        <height>161</height>
       </rect>
      </property>
@@ -103,12 +65,12 @@
        <rect>
         <x>10</x>
         <y>130</y>
-        <width>201</width>
+        <width>221</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>注：以上调整开启调试模式才会触发</string>
+       <string>注：以上调整只有开启调试模式才会触发</string>
       </property>
      </widget>
      <widget class="QWidget" name="layoutWidget">
@@ -116,47 +78,25 @@
        <rect>
         <x>10</x>
         <y>50</y>
-        <width>201</width>
+        <width>281</width>
         <height>71</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="debugGridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="confidenceThresholdLabel">
+       <item row="1" column="0">
+        <widget class="QLabel" name="autoAlarmThresholdLabel">
          <property name="text">
-          <string>置信度阈值：</string>
+          <string>自动报警阈值：</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QSlider" name="confidenceThresholdSlider">
-         <property name="maximum">
-          <number>80</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
-         </property>
-         <property name="pageStep">
-          <number>5</number>
-         </property>
-         <property name="value">
-          <number>60</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksAbove</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="autoAlarmThresholdLabel">
+       <item row="0" column="0">
+        <widget class="QLabel" name="confidenceThresholdLabel">
          <property name="text">
-          <string>自动报警阈值：</string>
+          <string>置信度阈值：</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -188,15 +128,37 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QSlider" name="confidenceThresholdSlider">
+         <property name="maximum">
+          <number>80</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="pageStep">
+          <number>5</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
     <widget class="QGroupBox" name="tipsGroupBox">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>20</y>
-       <width>221</width>
+       <x>10</x>
+       <y>190</y>
+       <width>301</width>
        <height>161</height>
       </rect>
      </property>
@@ -208,7 +170,7 @@
        <rect>
         <x>10</x>
         <y>80</y>
-        <width>201</width>
+        <width>271</width>
         <height>71</height>
        </rect>
       </property>
@@ -224,7 +186,7 @@
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>201</width>
+        <width>271</width>
         <height>51</height>
        </rect>
       </property>
@@ -273,8 +235,14 @@
       <layout class="QVBoxLayout" name="functionVerticalLayout">
        <item>
         <widget class="QCheckBox" name="faceTrackerCheckBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>人脸跟踪</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -498,10 +466,10 @@
    <widget class="QGroupBox" name="logGroupBox">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>400</y>
-      <width>481</width>
-      <height>191</height>
+      <x>830</x>
+      <y>380</y>
+      <width>321</width>
+      <height>211</height>
      </rect>
     </property>
     <property name="title">
@@ -515,23 +483,23 @@
       <rect>
        <x>0</x>
        <y>20</y>
-       <width>481</width>
-       <height>171</height>
+       <width>321</width>
+       <height>191</height>
       </rect>
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="faceTrackerGroupBox">
+   <widget class="QGroupBox" name="realTimeCaptureGroupBox">
     <property name="geometry">
      <rect>
       <x>180</x>
       <y>10</y>
-      <width>481</width>
-      <height>381</height>
+      <width>641</width>
+      <height>581</height>
      </rect>
     </property>
     <property name="title">
-     <string>人脸跟踪画面</string>
+     <string>摄像头实时画面</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -539,13 +507,13 @@
     <property name="flat">
      <bool>false</bool>
     </property>
-    <widget class="QLabel" name="faceTrackerCaptureLabel">
+    <widget class="QLabel" name="realTimeCaptureLabel">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>20</y>
-       <width>480</width>
-       <height>360</height>
+       <width>640</width>
+       <height>480</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -553,6 +521,28 @@
      </property>
      <property name="text">
       <string>&lt;font color=red&gt;摄像头未开启&lt;/font&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="aboutLabel">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>520</y>
+       <width>541</width>
+       <height>36</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>楷体</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>基于OpenCV的视频人脸识别系统 V1.0</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

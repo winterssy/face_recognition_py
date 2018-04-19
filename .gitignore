@@ -103,4 +103,8 @@ ENV/
 .idea/
 datasets/
 recognizer/
+unknown/
+tmp/
+config/telegramBot.cfg
 *.db
+*.log.*
