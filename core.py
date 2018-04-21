@@ -484,7 +484,7 @@ class FaceProcessingThread(QThread):
             if CoreUI.cap.isOpened():
                 ret, frame = CoreUI.cap.read()
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = faceCascade.detectMultiScale(gray, 1.3, 5)
+                faces = faceCascade.detectMultiScale(gray, 1.3, 5, minSize=(90, 90))
 
                 # 预加载数据文件
                 if not isTrainingDataLoaded and os.path.isfile(CoreUI.trainingData):
@@ -549,7 +549,6 @@ class FaceProcessingThread(QThread):
                                             (0, 97, 255), 2)
                             else:
                                 # 若置信度评分大于置信度阈值，该人脸可能是陌生人
-                                # isKnown = False
                                 cv2.putText(realTimeFrame, 'unknown', (_x - 5, _y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                             (0, 0, 255), 2)
                                 # 若置信度评分超出自动报警阈值，触发报警信号
