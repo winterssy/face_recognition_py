@@ -107,68 +107,17 @@
      <property name="title">
       <string>图像预处理</string>
      </property>
-     <widget class="QPushButton" name="pushButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
+     <widget class="QCheckBox" name="equalizeHistCheckBox">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>30</y>
-        <width>111</width>
-        <height>31</height>
+        <x>10</x>
+        <y>40</y>
+        <width>91</width>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
-       <string>这是一个</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>70</y>
-        <width>111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>待评估</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>30</y>
-        <width>111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>新功能</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>70</y>
-        <width>111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>可能不会实现</string>
+       <string>直方图均衡化</string>
       </property>
      </widget>
     </widget>

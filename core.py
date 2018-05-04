@@ -71,6 +71,10 @@ class CoreUI(QMainWindow):
             lambda: self.faceProcessingThread.enableFaceRecognizer(self))
         self.panalarmCheckBox.stateChanged.connect(lambda: self.faceProcessingThread.enablePanalarm(self))
 
+        # 直方图均衡化
+        self.equalizeHistCheckBox.stateChanged.connect(
+            lambda: self.faceProcessingThread.enableEqualizeHist(self))
+
         # 调试模式
         self.debugCheckBox.stateChanged.connect(lambda: self.faceProcessingThread.enableDebug(self))
         self.confidenceThresholdSlider.valueChanged.connect(
@@ -414,6 +418,8 @@ class FaceProcessingThread(QThread):
         self.confidenceThreshold = 50
         self.autoAlarmThreshold = 65
 
+        self.isEqualizeHistEnabled = False
+
     # 是否开启人脸跟踪
     def enableFaceTracker(self, coreUI):
         if coreUI.faceTrackerCheckBox.isChecked():
@@ -467,6 +473,15 @@ class FaceProcessingThread(QThread):
             self.autoAlarmThreshold = coreUI.autoAlarmThresholdSlider.value()
             coreUI.statusBar().showMessage('自动报警阈值：{}'.format(self.autoAlarmThreshold))
 
+    # 是否执行直方图均衡化
+    def enableEqualizeHist(self, coreUI):
+        if coreUI.equalizeHistCheckBox.isChecked():
+            self.isEqualizeHistEnabled = True
+            coreUI.statusBar().showMessage('直方图均衡化：开启')
+        else:
+            self.isEqualizeHistEnabled = False
+            coreUI.statusBar().showMessage('直方图均衡化：关闭')
+
     def run(self):
         faceCascade = cv2.CascadeClassifier('./haarcascades/haarcascade_frontalface_default.xml')
 
@@ -484,6 +499,8 @@ class FaceProcessingThread(QThread):
             if CoreUI.cap.isOpened():
                 ret, frame = CoreUI.cap.read()
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                if self.isEqualizeHistEnabled:
+                    gray = cv2.equalizeHist(gray)
                 faces = faceCascade.detectMultiScale(gray, 1.3, 5, minSize=(90, 90))
 
                 # 预加载数据文件

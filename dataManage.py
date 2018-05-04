@@ -49,6 +49,11 @@ class DataManageUI(QWidget):
         self.queryUserButton.clicked.connect(self.queryUser)
         self.deleteUserButton.clicked.connect(self.deleteUser)
 
+        # 直方图均衡化
+        self.isEqualizeHistEnabled = False
+        self.equalizeHistCheckBox.stateChanged.connect(
+            lambda: self.enableEqualizeHist(self.equalizeHistCheckBox))
+
         # 训练人脸数据
         self.trainButton.clicked.connect(self.train)
 
@@ -56,6 +61,13 @@ class DataManageUI(QWidget):
         self.receiveLogSignal.connect(lambda log: self.logOutput(log))
         self.logOutputThread = threading.Thread(target=self.receiveLog, daemon=True)
         self.logOutputThread.start()
+
+    # 是否执行直方图均衡化
+    def enableEqualizeHist(self, equalizeHistCheckBox):
+        if equalizeHistCheckBox.isChecked():
+            self.isEqualizeHistEnabled = True
+        else:
+            self.isEqualizeHistEnabled = False
 
     # 初始化/刷新数据库
     def initDb(self):
@@ -182,6 +194,8 @@ class DataManageUI(QWidget):
     # 检测人脸
     def detectFace(self, img):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        if self.isEqualizeHistEnabled:
+            gray = cv2.equalizeHist(gray)
         face_cascade = cv2.CascadeClassifier('./haarcascades/haarcascade_frontalface_default.xml')
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(90, 90))
 

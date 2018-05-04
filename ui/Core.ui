@@ -33,7 +33,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>60</y>
        <width>301</width>
        <height>161</height>
       </rect>
@@ -157,9 +157,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>230</y>
        <width>301</width>
-       <height>161</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -169,9 +169,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>80</y>
+        <y>60</y>
         <width>271</width>
-        <height>71</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
@@ -187,7 +187,7 @@
         <x>10</x>
         <y>20</y>
         <width>271</width>
-        <height>51</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
@@ -197,6 +197,19 @@
        <bool>true</bool>
       </property>
      </widget>
+    </widget>
+    <widget class="QCheckBox" name="equalizeHistCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>25</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>直方图均衡化</string>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="systemSettingsGroupBox">
