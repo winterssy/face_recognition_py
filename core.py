@@ -83,6 +83,7 @@ class CoreUI(QMainWindow):
             lambda: self.faceProcessingThread.setAutoAlarmThreshold(self))
 
         # 报警系统
+        self.alarmSignalThreshold = 10
         self.panalarmThread = threading.Thread(target=self.recieveAlarm, daemon=True)
         self.isBellEnabled = True
         self.bellCheckBox.stateChanged.connect(lambda: self.enableBell(self.bellCheckBox))
@@ -323,7 +324,7 @@ class CoreUI(QMainWindow):
         while True:
             jobs = []
             # print(self.alarmQueue.qsize())
-            if self.alarmQueue.qsize() > 10:  # 若报警信号触发超出既定计数，进行报警
+            if self.alarmQueue.qsize() > self.alarmSignalThreshold:  # 若报警信号触发超出既定计数，进行报警
                 if not os.path.isdir('./unknown'):
                     os.makedirs('./unknown')
                 lastAlarmSignal = self.alarmQueue.get()
@@ -377,7 +378,7 @@ class CoreUI(QMainWindow):
 
         self.logTextEdit.moveCursor(QTextCursor.End)
         self.logTextEdit.insertPlainText(log)
-        self.logTextEdit.ensureCursorVisible()
+        self.logTextEdit.ensureCursorVisible()  # 自动滚屏
 
     # 系统对话框
     @staticmethod
@@ -402,6 +403,71 @@ class CoreUI(QMainWindow):
         if self.cap.isOpened():
             self.cap.release()
         event.accept()
+
+
+# TelegramBot设置对话框
+class TelegramBotDialog(QDialog):
+    def __init__(self):
+        super(TelegramBotDialog, self).__init__()
+        loadUi('./ui/TelegramBotDialog.ui', self)
+        self.setWindowIcon(QIcon('./icons/icon.png'))
+        self.setFixedSize(550, 358)
+
+        chat_id_regx = QRegExp('^\d+$')
+        chat_id_validator = QRegExpValidator(chat_id_regx, self.telegramIDLineEdit)
+        self.telegramIDLineEdit.setValidator(chat_id_validator)
+
+        self.okButton.clicked.connect(self.telegramBotSettings)
+
+    def telegramBotSettings(self):
+        # 获取用户输入
+        token = self.tokenLineEdit.text().strip()
+        chat_id = self.telegramIDLineEdit.text().strip()
+        proxy_url = self.socksLineEdit.text().strip()
+        message = self.messagePlainTextEdit.toPlainText().strip()
+
+        # 校验并处理用户输入
+        if not (token and chat_id and message):
+            self.okButton.setIcon(QIcon('./icons/error.png'))
+            CoreUI.logQueue.put('Error：API Token、Telegram ID和消息内容为必填项')
+        else:
+            ret = self.telegramBotTest(token, proxy_url)
+            if ret:
+                cfg_file = './config/telegramBot.cfg'
+                cfg = ConfigParser()
+                cfg.read(cfg_file, encoding='utf-8-sig')
+
+                cfg.set('telegramBot', 'token', token)
+                cfg.set('telegramBot', 'chat_id', chat_id)
+                cfg.set('telegramBot', 'proxy_url', proxy_url)
+                cfg.set('telegramBot', 'message', message)
+
+                try:
+                    with open(cfg_file, 'w', encoding='utf-8') as file:
+                        cfg.write(file)
+                except:
+                    logging.error('写入telegramBot配置文件发生异常')
+                    CoreUI.logQueue.put('Error：写入配置文件时发生异常，更新失败')
+                else:
+                    CoreUI.logQueue.put('Success：测试通过，系统已更新TelegramBot配置')
+                    self.close()
+            else:
+                CoreUI.logQueue.put('Error：测试失败，无法更新TelegramBot配置')
+
+    # TelegramBot 测试
+    def telegramBotTest(self, token, proxy_url):
+        try:
+            # 是否使用代理
+            if proxy_url:
+                proxy = telegram.utils.request.Request(proxy_url=proxy_url)
+                bot = telegram.Bot(token=token, request=proxy)
+            else:
+                bot = telegram.Bot(token=token)
+            bot.get_me()
+        except Exception as e:
+            return False
+        else:
+            return True
 
 
 # OpenCV线程
@@ -473,7 +539,7 @@ class FaceProcessingThread(QThread):
             self.autoAlarmThreshold = coreUI.autoAlarmThresholdSlider.value()
             coreUI.statusBar().showMessage('自动报警阈值：{}'.format(self.autoAlarmThreshold))
 
-    # 是否执行直方图均衡化
+    # 直方图均衡化
     def enableEqualizeHist(self, coreUI):
         if coreUI.equalizeHistCheckBox.isChecked():
             self.isEqualizeHistEnabled = True
@@ -499,6 +565,7 @@ class FaceProcessingThread(QThread):
             if CoreUI.cap.isOpened():
                 ret, frame = CoreUI.cap.read()
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                # 是否执行直方图均衡化
                 if self.isEqualizeHistEnabled:
                     gray = cv2.equalizeHist(gray)
                 faces = faceCascade.detectMultiScale(gray, 1.3, 5, minSize=(90, 90))
@@ -598,7 +665,7 @@ class FaceProcessingThread(QThread):
 
                             for fid in faceTrackers.keys():
                                 # 获取人脸跟踪器的位置
-                                # tracked_position 是 dlib.dlib.drectangle 类型，用来表征图像的矩形区域，坐标是浮点数
+                                # tracked_position 是 dlib.drectangle 类型，用来表征图像的矩形区域，坐标是浮点数
                                 tracked_position = faceTrackers[fid].get_position()
                                 # 浮点数取整
                                 t_x = int(tracked_position.left())
@@ -629,10 +696,8 @@ class FaceProcessingThread(QThread):
 
                     # 使用当前的人脸跟踪器，更新画面，输出跟踪结果
                     for fid in faceTrackers.keys():
-                        # 获取人脸跟踪器的位置
-                        # tracked_position 是 dlib.dlib.drectangle 类型，用来表征图像的矩形区域，坐标是浮点数
                         tracked_position = faceTrackers[fid].get_position()
-                        # 浮点数取整
+
                         t_x = int(tracked_position.left())
                         t_y = int(tracked_position.top())
                         t_w = int(tracked_position.width())
@@ -655,71 +720,6 @@ class FaceProcessingThread(QThread):
         self.isRunning = False
         self.quit()
         self.wait()
-
-
-# TelegramBot设置对话框
-class TelegramBotDialog(QDialog):
-    def __init__(self):
-        super(TelegramBotDialog, self).__init__()
-        loadUi('./ui/TelegramBotDialog.ui', self)
-        self.setWindowIcon(QIcon('./icons/icon.png'))
-        self.setFixedSize(550, 358)
-
-        chat_id_regx = QRegExp('^\d+$')
-        chat_id_validator = QRegExpValidator(chat_id_regx, self.telegramIDLineEdit)
-        self.telegramIDLineEdit.setValidator(chat_id_validator)
-
-        self.okButton.clicked.connect(self.telegramBotSettings)
-
-    def telegramBotSettings(self):
-        # 获取用户输入
-        token = self.tokenLineEdit.text().strip()
-        chat_id = self.telegramIDLineEdit.text().strip()
-        proxy_url = self.socksLineEdit.text().strip()
-        message = self.messagePlainTextEdit.toPlainText().strip()
-
-        # 校验并处理用户输入
-        if not (token and chat_id and message):
-            self.okButton.setIcon(QIcon('./icons/error.png'))
-            CoreUI.logQueue.put('Error：API Token、Telegram ID和消息内容为必填项')
-        else:
-            ret = self.telegramBotTest(token, proxy_url)
-            if ret:
-                cfg_file = './config/telegramBot.cfg'
-                cfg = ConfigParser()
-                cfg.read(cfg_file, encoding='utf-8-sig')
-
-                cfg.set('telegramBot', 'token', token)
-                cfg.set('telegramBot', 'chat_id', chat_id)
-                cfg.set('telegramBot', 'proxy_url', proxy_url)
-                cfg.set('telegramBot', 'message', message)
-
-                try:
-                    with open(cfg_file, 'w', encoding='utf-8') as file:
-                        cfg.write(file)
-                except:
-                    logging.error('写入telegramBot配置文件发生异常')
-                    CoreUI.logQueue.put('Error：写入配置文件时发生异常，更新失败')
-                else:
-                    CoreUI.logQueue.put('Success：测试通过，系统已更新TelegramBot配置')
-                    self.close()
-            else:
-                CoreUI.logQueue.put('Error：测试失败，无法更新TelegramBot配置')
-
-    # TelegramBot 测试
-    def telegramBotTest(self, token, proxy_url):
-        try:
-            # 是否使用代理
-            if proxy_url:
-                proxy = telegram.utils.request.Request(proxy_url=proxy_url)
-                bot = telegram.Bot(token=token, request=proxy)
-            else:
-                bot = telegram.Bot(token=token)
-            bot.get_me()
-        except Exception as e:
-            return False
-        else:
-            return True
 
 
 if __name__ == '__main__':

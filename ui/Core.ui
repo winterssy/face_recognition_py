@@ -555,7 +555,7 @@
       </font>
      </property>
      <property name="text">
-      <string>基于OpenCV的视频人脸识别系统 V1.0</string>
+      <string>基于OpenCV的视频人脸识别</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

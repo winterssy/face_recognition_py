@@ -68,21 +68,21 @@ class DataRecordUI(QWidget):
         self.initDbButton.clicked.connect(self.initDb)
 
         # 用户信息
-        self.userInfo = {'stu_id': '', 'cn_name': '', 'en_name': ''}
         self.isUserInfoReady = False
+        self.userInfo = {'stu_id': '', 'cn_name': '', 'en_name': ''}
         self.addOrUpdateUserInfoButton.clicked.connect(self.addOrUpdateUserInfo)
         self.migrateToDbButton.clicked.connect(self.migrateToDb)
 
         # 人脸采集
-        self.isRecordFaceLaterOn = False
-        self.recordFaceNowButton.clicked.connect(self.recordFaceNow)
-        self.recordFaceLaterButton.clicked.connect(self.recordFaceLater)
+        self.startFaceRecordButton.clicked.connect(lambda: self.startFaceRecord(self.startFaceRecordButton))
+        # self.startFaceRecordButton.setCheckable(True)
+        self.faceRecordCount = 0
+        self.minFaceRecordCount = 100
+        self.isFaceDataReady = False
         self.isFaceRecordEnabled = False
         self.enableFaceRecordButton.clicked.connect(self.enableFaceRecord)
-        self.faceRecordCount = 0
-        self.isFaceDataReady = False
-        self.stopFaceRecordButton.clicked.connect(self.stopFaceRecord)
 
+        # 日志系统
         self.receiveLogSignal.connect(lambda log: self.logOutput(log))
         self.logOutputThread = threading.Thread(target=self.receiveLog, daemon=True)
         self.logOutputThread.start()
@@ -140,40 +140,50 @@ class DataRecordUI(QWidget):
 
     # 采集当前捕获帧
     def enableFaceRecord(self):
-        if self.isFaceDetectEnabled:
-            # 用户信息是否有效
-            if self.isUserInfoReady:
-                if self.addOrUpdateUserInfoButton.isEnabled():
+        if not self.isFaceRecordEnabled:
+            self.isFaceRecordEnabled = True
+
+    # 开始/结束采集人脸数据
+    def startFaceRecord(self, startFaceRecordButton):
+        if startFaceRecordButton.text() == '开始采集人脸数据':
+            if self.isFaceDetectEnabled:
+                if self.isUserInfoReady:
                     self.addOrUpdateUserInfoButton.setEnabled(False)
-                if not self.isFaceRecordEnabled:
-                    self.isFaceRecordEnabled = True
-                if not self.stopFaceRecordButton.isEnabled():
-                    self.stopFaceRecordButton.setEnabled(True)
+                    if not self.enableFaceRecordButton.isEnabled():
+                        self.enableFaceRecordButton.setEnabled(True)
+                    self.enableFaceRecordButton.setIcon(QIcon())
+                    self.startFaceRecordButton.setIcon(QIcon('./icons/success.png'))
+                    self.startFaceRecordButton.setText('结束当前人脸采集')
+                else:
+                    self.startFaceRecordButton.setIcon(QIcon('./icons/error.png'))
+                    self.startFaceRecordButton.setChecked(False)
+                    self.logQueue.put('Error：操作失败，系统未检测到有效的用户信息')
             else:
-                self.logQueue.put('Error：操作失败，系统未检测到有效的用户信息')
+                self.startFaceRecordButton.setIcon(QIcon('./icons/error.png'))
+                self.logQueue.put('Error：操作失败，请开启人脸检测')
         else:
-            self.logQueue.put('Error：操作失败，请开启人脸检测')
+            if self.faceRecordCount < self.minFaceRecordCount:
+                text = '系统当前采集了 <font color=blue>{}</font> 帧图像，采集数据过少会导致较大的识别误差。'.format(self.faceRecordCount)
+                informativeText = '<b>请至少采集 <font color=red>{}</font> 帧图像。</b>'.format(self.minFaceRecordCount)
+                DataRecordUI.callDialog(QMessageBox.Information, text, informativeText, QMessageBox.Ok)
 
-    # 结束当前人脸采集
-    def stopFaceRecord(self):
-        if self.faceRecordCount < 100:
-            text = '系统当前采集了 <font color=blue>{}</font> 帧图像，采集数据过少会导致较大的识别误差。'.format(self.faceRecordCount)
-            informativeText = '<b>请至少采集 <font color=red>100</font> 帧图像。</b>'
-            DataRecordUI.callDialog(QMessageBox.Information, text, informativeText, QMessageBox.Ok)
+            else:
+                text = '系统当前采集了 <font color=blue>{}</font> 帧图像，继续采集可以提高识别准确率。'.format(self.faceRecordCount)
+                informativeText = '<b>你确定结束当前人脸采集吗？</b>'
+                ret = DataRecordUI.callDialog(QMessageBox.Question, text, informativeText,
+                                              QMessageBox.Yes | QMessageBox.No,
+                                              QMessageBox.No)
 
-        else:
-            text = '系统当前采集了 <font color=blue>{}</font> 帧图像，继续采集可以提高识别准确率。'.format(self.faceRecordCount)
-            informativeText = '<b>你确定结束当前人脸采集吗？</b>'
-            ret = DataRecordUI.callDialog(QMessageBox.Question, text, informativeText, QMessageBox.Yes | QMessageBox.No,
-                                          QMessageBox.No)
-
-            if ret == QMessageBox.Yes:
-                self.isFaceDataReady = True
-                if self.isFaceRecordEnabled:
-                    self.isFaceRecordEnabled = False
-                self.enableFaceRecordButton.setEnabled(False)
-                self.stopFaceRecordButton.setEnabled(False)
-                self.migrateToDbButton.setEnabled(True)
+                if ret == QMessageBox.Yes:
+                    self.isFaceDataReady = True
+                    if self.isFaceRecordEnabled:
+                        self.isFaceRecordEnabled = False
+                    self.enableFaceRecordButton.setEnabled(False)
+                    self.enableFaceRecordButton.setIcon(QIcon())
+                    self.startFaceRecordButton.setText('开始采集人脸数据')
+                    self.startFaceRecordButton.setEnabled(False)
+                    self.startFaceRecordButton.setIcon(QIcon())
+                    self.migrateToDbButton.setEnabled(True)
 
     # 定时器，实时更新画面
     def updateFrame(self):
@@ -322,114 +332,81 @@ class DataRecordUI(QWidget):
             self.cnNameLineEdit.setText(cn_name)
             self.enNameLineEdit.setText(en_name)
 
-            self.recordFaceNowButton.setEnabled(True)
-            self.recordFaceLaterButton.setEnabled(True)
             self.isUserInfoReady = True
+            if not self.startFaceRecordButton.isEnabled():
+                self.startFaceRecordButton.setEnabled(True)
             self.migrateToDbButton.setIcon(QIcon())
 
             # 关闭对话框
             self.userInfoDialog.close()
 
-    # 调用电脑摄像头采集人脸数据
-    def recordFaceNow(self):
-        self.enableFaceRecordButton.setEnabled(True)
-        self.enableFaceRecordButton.setIcon(QIcon())
-        self.addOrUpdateUserInfoButton.setEnabled(False)
-        self.recordFaceLaterButton.setEnabled(False)
-        self.recordFaceNowButton.setEnabled(False)
-
-    # 手动增加人脸数据
-    def recordFaceLater(self):
-        stu_id, cn_name = self.userInfo.get('stu_id'), self.userInfo.get('cn_name')
-        self.isRecordFaceLaterOn = True
-        self.migrateToDbButton.setEnabled(True)
-        self.addOrUpdateUserInfoButton.setEnabled(False)
-        self.recordFaceNowButton.setEnabled(False)
-        self.recordFaceLaterButton.setEnabled(False)
-        self.logQueue.put('Info：你须将{}的人脸数据放在{}/stu_{}目录下'.format(cn_name, self.datasets, stu_id))
-
     # 同步用户信息到数据库
     def migrateToDb(self):
-        if self.isUserInfoReady:
-            if self.isFaceDataReady or self.isRecordFaceLaterOn:
-                stu_id, cn_name, en_name = self.userInfo.get('stu_id'), self.userInfo.get('cn_name'), self.userInfo.get(
-                    'en_name')
-                conn = sqlite3.connect(self.database)
-                cursor = conn.cursor()
+        if self.isFaceDataReady:
+            stu_id, cn_name, en_name = self.userInfo.get('stu_id'), self.userInfo.get('cn_name'), self.userInfo.get(
+                'en_name')
+            conn = sqlite3.connect(self.database)
+            cursor = conn.cursor()
 
-                try:
-                    cursor.execute('SELECT * FROM users WHERE stu_id=?', (stu_id,))
-                    if cursor.fetchall():
-                        text = '数据库已存在学号为 <font color=blue>{}</font> 的用户记录。'.format(stu_id)
-                        informativeText = '<b>是否覆盖？</b>'
-                        ret = DataRecordUI.callDialog(QMessageBox.Warning, text, informativeText,
-                                                      QMessageBox.Yes | QMessageBox.No)
+            try:
+                cursor.execute('SELECT * FROM users WHERE stu_id=?', (stu_id,))
+                if cursor.fetchall():
+                    text = '数据库已存在学号为 <font color=blue>{}</font> 的用户记录。'.format(stu_id)
+                    informativeText = '<b>是否覆盖？</b>'
+                    ret = DataRecordUI.callDialog(QMessageBox.Warning, text, informativeText,
+                                                  QMessageBox.Yes | QMessageBox.No)
 
-                        if ret == QMessageBox.Yes:
-                            # 更新已有记录
-                            cursor.execute('UPDATE users SET cn_name=?, en_name=? WHERE stu_id=?',
-                                           (cn_name, en_name, stu_id,))
-                        else:
-                            raise OperationCancel  # 记录取消覆盖操作
+                    if ret == QMessageBox.Yes:
+                        # 更新已有记录
+                        cursor.execute('UPDATE users SET cn_name=?, en_name=? WHERE stu_id=?',
+                                       (cn_name, en_name, stu_id,))
                     else:
-                        # 插入新记录
-                        cursor.execute('INSERT INTO users (stu_id, cn_name, en_name) VALUES (?, ?, ?)',
-                                       (stu_id, cn_name, en_name,))
-
-                    cursor.execute('SELECT Count(*) FROM users')
-                    result = cursor.fetchone()
-                    dbUserCount = result[0]
-                except OperationCancel:
-                    pass
-                except Exception as e:
-                    logging.error('读写数据库异常，无法向数据库插入/更新记录')
-                    self.migrateToDbButton.setIcon(QIcon('./icons/error.png'))
-                    self.logQueue.put('Error：读写数据库异常，同步失败')
+                        raise OperationCancel  # 记录取消覆盖操作
                 else:
-                    text = '<font color=blue>{}</font> 已添加/更新到数据库。'.format(stu_id)
-                    if self.isRecordFaceLaterOn:
-                        informativeText = '请稍后手动增加 <b><font color=blue>{}</font> 的人脸数据。</b>'.format(cn_name)
-                    else:
-                        informativeText = '<b><font color=blue>{}</font> 的人脸数据采集已完成！</b>'.format(cn_name)
+                    # 插入新记录
+                    cursor.execute('INSERT INTO users (stu_id, cn_name, en_name) VALUES (?, ?, ?)',
+                                   (stu_id, cn_name, en_name,))
 
-                    DataRecordUI.callDialog(QMessageBox.Information, text, informativeText, QMessageBox.Ok)
-
-                    # 清空用户信息缓存
-                    for key in self.userInfo.keys():
-                        self.userInfo[key] = ''
-                    self.isUserInfoReady = False
-
-                    # 若通过电脑摄像头采集人脸数据
-                    if self.isFaceDataReady:
-                        self.faceRecordCount = 0
-                        self.isFaceDataReady = False
-                        self.faceRecordCountLcdNum.display(self.faceRecordCount)
-
-                    # 若选择手动增加人脸数据
-                    if self.isRecordFaceLaterOn:
-                        self.isRecordFaceLaterOn = False
-
-                    self.dbUserCountLcdNum.display(dbUserCount)
-
-                    # 清空历史输入
-                    self.stuIDLineEdit.clear()
-                    self.cnNameLineEdit.clear()
-                    self.enNameLineEdit.clear()
-                    self.migrateToDbButton.setIcon(QIcon('./icons/success.png'))
-
-                    # 允许继续增加新用户
-                    self.addOrUpdateUserInfoButton.setEnabled(True)
-                    self.migrateToDbButton.setEnabled(False)
-
-                finally:
-                    cursor.close()
-                    conn.commit()
-                    conn.close()
-            else:
-                self.logQueue.put('Error：操作失败，你尚未完成人脸数据采集')
+                cursor.execute('SELECT Count(*) FROM users')
+                result = cursor.fetchone()
+                dbUserCount = result[0]
+            except OperationCancel:
+                pass
+            except Exception as e:
+                logging.error('读写数据库异常，无法向数据库插入/更新记录')
                 self.migrateToDbButton.setIcon(QIcon('./icons/error.png'))
+                self.logQueue.put('Error：读写数据库异常，同步失败')
+            else:
+                text = '<font color=blue>{}</font> 已添加/更新到数据库。'.format(stu_id)
+                informativeText = '<b><font color=blue>{}</font> 的人脸数据采集已完成！</b>'.format(cn_name)
+                DataRecordUI.callDialog(QMessageBox.Information, text, informativeText, QMessageBox.Ok)
+
+                # 清空用户信息缓存
+                for key in self.userInfo.keys():
+                    self.userInfo[key] = ''
+                self.isUserInfoReady = False
+
+                self.faceRecordCount = 0
+                self.isFaceDataReady = False
+                self.faceRecordCountLcdNum.display(self.faceRecordCount)
+                self.dbUserCountLcdNum.display(dbUserCount)
+
+                # 清空历史输入
+                self.stuIDLineEdit.clear()
+                self.cnNameLineEdit.clear()
+                self.enNameLineEdit.clear()
+                self.migrateToDbButton.setIcon(QIcon('./icons/success.png'))
+
+                # 允许继续增加新用户
+                self.addOrUpdateUserInfoButton.setEnabled(True)
+                self.migrateToDbButton.setEnabled(False)
+
+            finally:
+                cursor.close()
+                conn.commit()
+                conn.close()
         else:
-            self.logQueue.put('Error：操作失败，系统未检测到有效的用户信息')
+            self.logQueue.put('Error：操作失败，你尚未完成人脸数据采集')
             self.migrateToDbButton.setIcon(QIcon('./icons/error.png'))
 
     # 系统日志服务常驻，接收并处理系统日志

@@ -61,12 +61,12 @@
     </property>
     <layout class="QHBoxLayout" name="faceRecordHorizontalLayout">
      <item>
-      <widget class="QPushButton" name="enableFaceRecordButton">
+      <widget class="QPushButton" name="startFaceRecordButton">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
-        <string>采集当前捕获帧</string>
+        <string>开始采集人脸数据</string>
        </property>
       </widget>
      </item>
@@ -92,12 +92,12 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="stopFaceRecordButton">
+      <widget class="QPushButton" name="enableFaceRecordButton">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>结束当前人脸采集</string>
+        <string>采集当前捕获帧</string>
        </property>
       </widget>
      </item>
@@ -157,7 +157,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>资料录入</string>
+    <string>数据录入</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -168,7 +168,7 @@
       <x>10</x>
       <y>130</y>
       <width>321</width>
-      <height>241</height>
+      <height>231</height>
      </rect>
     </property>
     <property name="title">
@@ -178,9 +178,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>60</y>
        <width>301</width>
-       <height>141</height>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -192,7 +192,7 @@
         <x>10</x>
         <y>20</y>
         <width>281</width>
-        <height>76</height>
+        <height>91</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="infoConfirmHorizontalLayout">
@@ -282,7 +282,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>120</y>
         <width>281</width>
         <height>31</height>
        </rect>
@@ -301,65 +301,27 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>281</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>点我增加/修改用户信息</string>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>50</y>
+       <x>21</x>
+       <y>23</y>
        <width>281</width>
        <height>31</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="howRecordFaceHorizontalLayout">
-      <item>
-       <widget class="QPushButton" name="recordFaceNowButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>开始采集人脸数据</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="recordFaceLaterButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>暂不采集（手动）</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="text">
+      <string>增加用户/修改用户资料</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="logGroupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>380</y>
+      <y>370</y>
       <width>321</width>
-      <height>191</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="title">
@@ -371,7 +333,7 @@
        <x>0</x>
        <y>20</y>
        <width>321</width>
-       <height>171</height>
+       <height>181</height>
       </rect>
      </property>
     </widget>
@@ -423,7 +385,7 @@
        <x>21</x>
        <y>20</y>
        <width>281</width>
-       <height>25</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
